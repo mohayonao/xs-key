@@ -8,7 +8,7 @@ const reducer = require("../src/reducer");
 const initState = (opts) => {
   return Object.assign({
     offset: 57,
-    keys: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    keys: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
   }, opts);
 };
 
@@ -20,9 +20,16 @@ describe("reducer", () => {
     assert.deepEqual(actual, expected);
   });
 
-  it("should handle SET_NOTE_STATE", () => {
-    const actual = reducer(initState(), { type: "SET_NOTE_STATE", noteNumber: 60, state: 1 });
-    const expected = initState({ keys: [ 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] });
+  it("should handle NOTE_ON", () => {
+    const actual = reducer(initState(), { type: "NOTE_ON", noteNumber: 60 });
+    const expected = initState({ keys: [ 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] });
+
+    assert.deepEqual(actual, expected);
+  });
+
+  it("should handle NOTE_OFF", () => {
+    const actual = reducer(initState({ keys: [ 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] }), { type: "NOTE_OFF", noteNumber: 60 });
+    const expected = initState({ keys: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] });
 
     assert.deepEqual(actual, expected);
   });

@@ -29,13 +29,11 @@ class Synthesizer {
       frequency: 440 * Math.pow(2, (noteNumber - 69) / 12),
     });
     this._notes[noteNumber].noteOn();
-    this.actions.setNoteState(noteNumber, 1);
   }
 
   noteOff(noteNumber) {
     if (this._notes[noteNumber]) {
       this._notes[noteNumber].noteOff();
-      this.actions.setNoteState(noteNumber, 0);
     }
     this._notes[noteNumber] = null;
   }

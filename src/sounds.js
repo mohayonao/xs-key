@@ -12,18 +12,13 @@ module.exports = {
     oscillator1.detune.value = +12;
     oscillator1.start(t0);
     oscillator1.connect(gain);
-    oscillator1.onended = () => {
-      oscillator1.disconnect();
-      oscillator2.disconnect();
-      gain.disconnect();
-    };
 
     oscillator2.frequency.value = frequency;
     oscillator2.detune.value = -12;
     oscillator2.start(t0);
     oscillator2.connect(gain);
 
-    gain.gain.setValueAtTime(0.1, t0);
+    gain.gain.setValueAtTime(0.5, t0);
 
     return {
       noteOn() {

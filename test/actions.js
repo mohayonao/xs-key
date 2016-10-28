@@ -14,10 +14,6 @@ describe("actions", () => {
     assert.deepEqual(actions.noteOff(69), { type: "NOTE_OFF", noteNumber: 69 });
   });
 
-  it("setNoteState should create SET_NOTE_STATE action", () => {
-    assert.deepEqual(actions.setNoteState(69, 1), { type: "SET_NOTE_STATE", noteNumber: 69, state: 1 });
-  });
-
   it("changeKeyOffset should create CHANGE_KEY_OFFSET action", () => {
     assert.deepEqual(actions.changeKeyOffset(60), { type: "CHANGE_KEY_OFFSET", offset: 60 });
   });

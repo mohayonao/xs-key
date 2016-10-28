@@ -22385,14 +22385,12 @@ var Synthesizer = function () {
         frequency: 440 * Math.pow(2, (noteNumber - 69) / 12)
       });
       this._notes[noteNumber].noteOn();
-      this.actions.setNoteState(noteNumber, 1);
     }
   }, {
     key: "noteOff",
     value: function noteOff(noteNumber) {
       if (this._notes[noteNumber]) {
         this._notes[noteNumber].noteOff();
-        this.actions.setNoteState(noteNumber, 0);
       }
       this._notes[noteNumber] = null;
     }
@@ -22412,9 +22410,6 @@ module.exports = {
   },
   noteOff: function noteOff(noteNumber) {
     return { type: "NOTE_OFF", noteNumber: noteNumber };
-  },
-  setNoteState: function setNoteState(noteNumber, state) {
-    return { type: "SET_NOTE_STATE", noteNumber: noteNumber, state: state };
   },
   changeKeyOffset: function changeKeyOffset(offset) {
     return { type: "CHANGE_KEY_OFFSET", offset: offset };
@@ -22489,7 +22484,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
 var nmap = require("nmap");
 
-var initState = { offset: 57, keys: nmap(20, function () {
+var initState = { offset: 57, keys: nmap(17, function () {
     return 0;
   }) };
 
@@ -22498,17 +22493,21 @@ module.exports = function () {
   var action = arguments[1];
 
   switch (action.type) {
-    case "SET_NOTE_STATE":
-      {
-        var keys = JSON.parse(JSON.stringify(state.keys));
-        keys[action.noteNumber - state.offset] = action.state;
-        return Object.assign({}, state, { keys: keys });
-      }
+    case "NOTE_ON":
+      return Object.assign({}, state, { keys: setNoteState(state.keys, action.noteNumber - state.offset, 1) });
+    case "NOTE_OFF":
+      return Object.assign({}, state, { keys: setNoteState(state.keys, action.noteNumber - state.offset, 0) });
     case "CHANGE_KEY_OFFSET":
       return Object.assign({}, state, { offset: action.offset });
   }
   return state;
 };
+
+function setNoteState(keys, index, state) {
+  keys = keys.slice();
+  keys[index] = state;
+  return keys;
+}
 
 },{"nmap":32}],202:[function(require,module,exports){
 "use strict";
@@ -22527,18 +22526,13 @@ module.exports = {
     oscillator1.detune.value = +12;
     oscillator1.start(t0);
     oscillator1.connect(gain);
-    oscillator1.onended = function () {
-      oscillator1.disconnect();
-      oscillator2.disconnect();
-      gain.disconnect();
-    };
 
     oscillator2.frequency.value = frequency;
     oscillator2.detune.value = -12;
     oscillator2.start(t0);
     oscillator2.connect(gain);
 
-    gain.gain.setValueAtTime(0.1, t0);
+    gain.gain.setValueAtTime(0.5, t0);
 
     return {
       noteOn: function noteOn() {
